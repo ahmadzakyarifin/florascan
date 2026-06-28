@@ -21,6 +21,14 @@
 
       <!-- Header Controls -->
       <div class="flex items-center gap-2 md:gap-3">
+        <!-- Install PWA Button -->
+        <button v-if="canInstall" @click="installApp" class="flex items-center gap-1.5 text-xs font-bold px-3 py-2 rounded bg-emerald-600 text-white hover:bg-emerald-700 transition shadow-sm h-9">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+          </svg>
+          <span class="hidden md:inline">Install App</span>
+        </button>
+        
         <!-- Dataset Info Button -->
         <button @click="openDatasetModal" class="flex items-center gap-1.5 text-xs font-bold px-3 py-2 rounded bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-emerald-100 hover:text-emerald-700 dark:hover:bg-emerald-900/40 dark:hover:text-emerald-400 transition border border-gray-200 dark:border-gray-700 h-9">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -569,6 +577,20 @@ const itemToDelete = ref(null)
 const isDatasetModalOpen = ref(false)
 const datasetPlants = computed(() => Object.values(plantsData))
 
+// PWA Install State
+const deferredPrompt = ref(null)
+const canInstall = ref(false)
+
+const installApp = async () => {
+  if (!deferredPrompt.value) return
+  deferredPrompt.value.prompt()
+  const { outcome } = await deferredPrompt.value.userChoice
+  if (outcome === 'accepted') {
+    canInstall.value = false
+  }
+  deferredPrompt.value = null
+}
+
 // Initialization
 onMounted(() => {
   isDark.value = document.body.classList.contains('dark')
@@ -578,6 +600,13 @@ onMounted(() => {
   if (savedHistory) {
     scanHistory.value = JSON.parse(savedHistory)
   }
+  
+  // PWA Prompt Listener
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault()
+    deferredPrompt.value = e
+    canInstall.value = true
+  })
 })
 
 onBeforeUnmount(() => {
