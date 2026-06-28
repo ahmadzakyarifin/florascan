@@ -1,6 +1,29 @@
 <template>
   <div class="min-h-screen bg-gray-50 dark:bg-gray-950 transition-colors duration-300 flex flex-col font-sans text-gray-900 dark:text-gray-100">
-    
+    <!-- App Launch Splash -->
+    <div
+      v-if="isSplashVisible"
+      class="fixed inset-0 z-[70] flex flex-col items-center justify-center bg-emerald-700 text-white px-8 animate-splash-out"
+    >
+      <div class="relative mb-7">
+        <div class="absolute inset-0 rounded-3xl bg-white/25 blur-xl animate-pulse"></div>
+        <div class="relative w-24 h-24 rounded-3xl bg-white text-emerald-700 shadow-2xl flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-14 w-14" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 21c-4.5-4.5-7-8.2-7-11.2A7 7 0 0112 3a7 7 0 017 6.8c0 3-2.5 6.7-7 11.2z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9.5 10.5c2.6 0 4.4-1.4 5-4 1.2 1.5 1.7 3.3 1.3 5.2-.5 2.4-2.4 4.3-5 4.7" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 16c2.2-2.8 4.5-4.7 7-5.8" />
+          </svg>
+        </div>
+      </div>
+
+      <h1 class="text-3xl font-extrabold tracking-normal leading-tight">FloraScan</h1>
+      <p class="text-sm text-emerald-50/90 font-medium mt-2 text-center">{{ $t('app.subtitle') }}</p>
+
+      <div class="w-44 h-1.5 bg-white/25 rounded-full mt-8 overflow-hidden">
+        <div class="h-full bg-white rounded-full animate-splash-progress"></div>
+      </div>
+    </div>
+	    
     <!-- Top Navbar -->
     <header class="sticky top-0 z-40 h-16 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between px-4 md:px-8 shadow-sm">
       <!-- Logo & Title -->
@@ -585,6 +608,8 @@ const { t, locale } = useI18n()
 // Global Layout State
 const isDark = ref(false)
 const currentLang = ref(locale.value)
+const isSplashVisible = ref(true)
+let splashTimer = null
 
 // Camera & Analysis State
 const videoElement = ref(null)
@@ -669,6 +694,9 @@ const closeInstallModal = () => {
 onMounted(() => {
   isDark.value = document.body.classList.contains('dark')
   isAppInstalled.value = isStandaloneApp()
+  splashTimer = window.setTimeout(() => {
+    isSplashVisible.value = false
+  }, 1500)
   
   // Load history from local storage
   const savedHistory = localStorage.getItem('flora_history')
@@ -692,6 +720,9 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
+  if (splashTimer) {
+    window.clearTimeout(splashTimer)
+  }
   if (beforeInstallPromptHandler) {
     window.removeEventListener('beforeinstallprompt', beforeInstallPromptHandler)
   }
@@ -1001,8 +1032,28 @@ const exportToCSV = () => {
   50% { transform: translateY(200%); }
   100% { transform: translateY(-100%); }
 }
+@keyframes splashProgress {
+  from { width: 0%; }
+  to { width: 100%; }
+}
+@keyframes splashOut {
+  0%, 72% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.02);
+  }
+}
 .animate-scan-line {
   animation: scanLine 3s ease-in-out infinite;
+}
+.animate-splash-progress {
+  animation: splashProgress 1.35s ease-out forwards;
+}
+.animate-splash-out {
+  animation: splashOut 1.5s ease forwards;
 }
 .direction-reverse {
   animation-direction: reverse;
