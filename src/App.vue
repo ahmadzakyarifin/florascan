@@ -62,6 +62,7 @@
               class="w-full h-full object-cover absolute inset-0 z-10" 
               :class="{'hidden': !isCameraActive || isCaptured}"
               autoplay 
+              muted
               playsinline>
             </video>
 
@@ -614,6 +615,7 @@ const startCamera = async () => {
     
     if (videoElement.value) {
       videoElement.value.srcObject = stream
+      videoElement.value.play().catch(e => console.error("Play error:", e))
       isCameraActive.value = true
       isCaptured.value = false
       showResult.value = false
