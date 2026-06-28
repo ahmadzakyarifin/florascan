@@ -829,8 +829,12 @@ const retakePhoto = () => {
 
 const loadTeachableMachineModel = async () => {
   if (!tmModel) {
-    const tmImage = await import('@teachablemachine/image')
-    tmModel = await tmImage.load(
+    // Use tmImage loaded from CDN (index.html script tags)
+    const tmImageLib = window.tmImage
+    if (!tmImageLib) {
+      throw new Error('Teachable Machine library not loaded. Check your internet connection.')
+    }
+    tmModel = await tmImageLib.load(
       `${MODEL_BASE_URL}model.json`,
       `${MODEL_BASE_URL}metadata.json`
     )
