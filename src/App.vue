@@ -609,6 +609,7 @@ import { useI18n } from 'vue-i18n'
 import plantsData from './data/plants_info.json'
 
 const { t, locale } = useI18n()
+const MODEL_BASE_URL = 'https://teachablemachine.withgoogle.com/models/GMWNtuX0_/'
 
 // Global Layout State
 const isDark = ref(false)
@@ -627,6 +628,7 @@ const isAnalyzing = ref(false)
 const showResult = ref(false)
 const cameraError = ref('')
 let stream = null
+let tmModel = null
 
 // Current Analysis Result
 const currentResult = ref(null)
@@ -825,43 +827,118 @@ const retakePhoto = () => {
   startCamera()
 }
 
-const analyzeImage = () => {
+const loadTeachableMachineModel = async () => {
+  if (!tmModel) {
+    const tmImage = await import('@teachablemachine/image')
+    tmModel = await tmImage.load(
+      `${MODEL_BASE_URL}model.json`,
+      `${MODEL_BASE_URL}metadata.json`
+    )
+  }
+
+  return tmModel
+}
+
+const imageFromDataUrl = (dataUrl) => {
+  return new Promise((resolve, reject) => {
+    const image = new Image()
+    image.onload = () => resolve(image)
+    image.onerror = reject
+    image.src = dataUrl
+  })
+}
+
+const normalizeLabel = (label) => {
+  return label.trim().toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '')
+}
+
+const plantKeyByLabel = {
+  alocasia: 'alocasia',
+  monstera: 'monstera',
+  sansevieria: 'sansevieria'
+}
+
+const titleFromLabel = (label) => {
+  return label.trim().replace(/_/g, ' ')
+}
+
+const fallbackPlantInfo = (label) => {
+  const cleanLabel = titleFromLabel(label)
+  const isNotPlant = normalizeLabel(label) === 'not_plant'
+  const isOtherPlant = normalizeLabel(label) === 'tanaman_lain'
+  const name = isNotPlant
+    ? (currentLang.value === 'id' ? 'Bukan Tanaman' : 'Not a Plant')
+    : cleanLabel
+
+  return {
+    name,
+    family: isOtherPlant ? 'Tanaman lain' : '-',
+    water_id: 'Data belum tersedia',
+    water_en: 'Data not available',
+    sun_id: 'Data belum tersedia',
+    sun_en: 'Data not available',
+    description_id: isNotPlant
+      ? 'Gambar tidak terdeteksi sebagai tanaman dari dataset FloraScan.'
+      : `Model mengenali gambar sebagai ${cleanLabel}, tetapi detail botani untuk label ini belum tersedia di database FloraScan.`,
+    description_en: isNotPlant
+      ? 'The image was not detected as a plant from the FloraScan dataset.'
+      : `The model recognized this image as ${cleanLabel}, but botanical details for this label are not available in the FloraScan database yet.`,
+    care_guide_id: 'Belum ada panduan perawatan untuk label ini.',
+    care_guide_en: 'No care guide is available for this label yet.',
+    toxicity_id: 'Data toksisitas belum tersedia.',
+    toxicity_en: 'Toxicity data is not available yet.'
+  }
+}
+
+const buildAnalysisResult = (plant, confidence) => {
+  const now = new Date()
+
+  return {
+    id: Date.now().toString(),
+    name: plant.name,
+    family: plant.family,
+    water_en: plant.water_en,
+    water_id: plant.water_id,
+    sun_en: plant.sun_en,
+    sun_id: plant.sun_id,
+    description_en: plant.description_en,
+    description_id: plant.description_id,
+    care_guide_en: plant.care_guide_en,
+    care_guide_id: plant.care_guide_id,
+    toxicity_en: plant.toxicity_en,
+    toxicity_id: plant.toxicity_id,
+    confidence,
+    image: capturedImage.value,
+    date: now.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }),
+    time: now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+    note: ''
+  }
+}
+
+const analyzeImage = async () => {
   isAnalyzing.value = true
   showResult.value = false
-  
-  setTimeout(() => {
-    isAnalyzing.value = false
+
+  try {
+    const model = await loadTeachableMachineModel()
+    const image = await imageFromDataUrl(capturedImage.value)
+    const predictions = await model.predict(image)
+    const bestPrediction = predictions.reduce((best, item) => {
+      return item.probability > best.probability ? item : best
+    }, predictions[0])
+    const label = bestPrediction.className
+    const plantKey = plantKeyByLabel[normalizeLabel(label)]
+    const plant = plantKey ? plantsData[plantKey] : fallbackPlantInfo(label)
+    const confidence = (bestPrediction.probability * 100).toFixed(1)
+
+    currentResult.value = buildAnalysisResult(plant, confidence)
     showResult.value = true
-    
-    // Pick a random plant from our static JSON database
-    const keys = Object.keys(plantsData)
-    const randomKey = keys[Math.floor(Math.random() * keys.length)]
-    const plant = plantsData[randomKey]
-    
-    const now = new Date()
-    
-    // Set current result WITHOUT saving to history
-    currentResult.value = {
-      id: Date.now().toString(),
-      name: plant.name,
-      family: plant.family,
-      water_en: plant.water_en,
-      water_id: plant.water_id,
-      sun_en: plant.sun_en,
-      sun_id: plant.sun_id,
-      description_en: plant.description_en,
-      description_id: plant.description_id,
-      care_guide_en: plant.care_guide_en,
-      care_guide_id: plant.care_guide_id,
-      toxicity_en: plant.toxicity_en,
-      toxicity_id: plant.toxicity_id,
-      confidence: (Math.random() * (99.9 - 85.0) + 85.0).toFixed(1),
-      image: capturedImage.value,
-      date: now.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }),
-      time: now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      note: '' // Empty note by default
-    }
-  }, 2000)
+  } catch (err) {
+    console.error("Error analyzing image: ", err)
+    cameraError.value = t('camera.analysis_failed')
+  } finally {
+    isAnalyzing.value = false
+  }
 }
 
 const saveCurrentResultToHistory = () => {
