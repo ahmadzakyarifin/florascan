@@ -22,11 +22,11 @@
       <!-- Header Controls -->
       <div class="flex items-center gap-2 md:gap-3">
         <!-- Install PWA Button -->
-        <button v-if="canInstall" @click="installApp" class="flex items-center gap-1.5 text-xs font-bold px-3 py-2 rounded bg-emerald-600 text-white hover:bg-emerald-700 transition shadow-sm h-9">
+        <button v-if="showInstallButton" @click="installApp" class="flex items-center gap-1.5 text-xs font-bold px-3 py-2 rounded bg-emerald-600 text-white hover:bg-emerald-700 transition shadow-sm h-9">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
           </svg>
-          <span class="hidden md:inline">Install App</span>
+          <span>{{ $t('pwa.install_button') }}</span>
         </button>
         
         <!-- Dataset Info Button -->
@@ -366,6 +366,49 @@
     <!-- Hidden Canvas for capturing frames -->
     <canvas ref="canvasElement" class="hidden"></canvas>
 
+    <!-- INSTALL APP MODAL -->
+    <div v-if="isInstallModalOpen" class="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div @click="closeInstallModal" class="absolute inset-0 bg-gray-900/60 dark:bg-black/70 backdrop-blur-sm transition-opacity"></div>
+
+      <div class="relative bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden flex flex-col animate-fade-in border border-gray-200 dark:border-gray-800">
+        <div class="flex items-center justify-between p-5 border-b border-gray-100 dark:border-gray-800">
+          <h3 class="font-bold text-lg text-gray-900 dark:text-white flex items-center gap-2">
+            <span class="w-8 h-8 bg-emerald-100 dark:bg-emerald-900/40 rounded flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+            </span>
+            {{ $t('pwa.modal_title') }}
+          </h3>
+          <button @click="closeInstallModal" class="p-1.5 text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <div class="p-6">
+          <p class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed mb-5">
+            {{ $t('pwa.modal_desc') }}
+          </p>
+          <ol class="space-y-3">
+            <li v-for="(stepKey, index) in installStepKeys" :key="stepKey" class="flex gap-3 text-sm text-gray-700 dark:text-gray-300">
+              <span class="shrink-0 w-6 h-6 rounded bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 font-bold flex items-center justify-center text-xs">
+                {{ index + 1 }}
+              </span>
+              <span>{{ $t(stepKey) }}</span>
+            </li>
+          </ol>
+        </div>
+
+        <div class="p-4 border-t border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-950 text-right">
+          <button @click="closeInstallModal" class="px-5 py-2 bg-emerald-600 text-white font-semibold rounded-lg hover:bg-emerald-700 transition">
+            {{ $t('app.dataset_close') }}
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- DETAIL MODAL (CRUD - Read & Update Notes) -->
     <div v-if="isModalOpen" class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
       <!-- Backdrop -->
@@ -579,21 +622,53 @@ const datasetPlants = computed(() => Object.values(plantsData))
 
 // PWA Install State
 const deferredPrompt = ref(null)
-const canInstall = ref(false)
+const isInstallModalOpen = ref(false)
+const isAppInstalled = ref(false)
+let beforeInstallPromptHandler = null
+let appInstalledHandler = null
+
+const isStandaloneApp = () => {
+  return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true
+}
+
+const showInstallButton = computed(() => !isAppInstalled.value)
+
+const installStepKeys = computed(() => {
+  const userAgent = window.navigator.userAgent.toLowerCase()
+
+  if (/iphone|ipad|ipod/.test(userAgent)) {
+    return ['pwa.ios_step1', 'pwa.ios_step2', 'pwa.ios_step3']
+  }
+
+  if (/android/.test(userAgent)) {
+    return ['pwa.android_step1', 'pwa.android_step2', 'pwa.android_step3']
+  }
+
+  return ['pwa.desktop_step1', 'pwa.desktop_step2', 'pwa.desktop_step3']
+})
 
 const installApp = async () => {
-  if (!deferredPrompt.value) return
+  if (!deferredPrompt.value) {
+    isInstallModalOpen.value = true
+    return
+  }
+
   deferredPrompt.value.prompt()
   const { outcome } = await deferredPrompt.value.userChoice
   if (outcome === 'accepted') {
-    canInstall.value = false
+    isAppInstalled.value = true
   }
   deferredPrompt.value = null
+}
+
+const closeInstallModal = () => {
+  isInstallModalOpen.value = false
 }
 
 // Initialization
 onMounted(() => {
   isDark.value = document.body.classList.contains('dark')
+  isAppInstalled.value = isStandaloneApp()
   
   // Load history from local storage
   const savedHistory = localStorage.getItem('flora_history')
@@ -602,14 +677,27 @@ onMounted(() => {
   }
   
   // PWA Prompt Listener
-  window.addEventListener('beforeinstallprompt', (e) => {
+  beforeInstallPromptHandler = (e) => {
     e.preventDefault()
     deferredPrompt.value = e
-    canInstall.value = true
-  })
+  }
+  window.addEventListener('beforeinstallprompt', beforeInstallPromptHandler)
+
+  appInstalledHandler = () => {
+    deferredPrompt.value = null
+    isAppInstalled.value = true
+    isInstallModalOpen.value = false
+  }
+  window.addEventListener('appinstalled', appInstalledHandler)
 })
 
 onBeforeUnmount(() => {
+  if (beforeInstallPromptHandler) {
+    window.removeEventListener('beforeinstallprompt', beforeInstallPromptHandler)
+  }
+  if (appInstalledHandler) {
+    window.removeEventListener('appinstalled', appInstalledHandler)
+  }
   stopCamera()
 })
 
