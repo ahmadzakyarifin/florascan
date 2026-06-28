@@ -1,0 +1,44 @@
+{
+  "monstera": {
+    "name": "Monstera Deliciosa",
+    "family": "Araceae",
+    "water_id": "Sedang (1x seminggu)",
+    "water_en": "Medium (1x week)",
+    "sun_id": "Cahaya Terang Tidak Langsung",
+    "sun_en": "Bright Indirect Light",
+    "description_en": "Monstera Deliciosa, commonly known as the Swiss Cheese Plant, is a species of flowering plant native to the tropical forests of southern Mexico. It is famous for its natural leaf holes (fenestrations) which develop to maximize sun capture on the forest floor. It is a climbing evergreen epiphyte that can grow up to 20 meters high in the wild.",
+    "description_id": "Monstera Deliciosa, sering disebut Janda Bolong atau Swiss Cheese Plant, adalah tanaman berbunga asli hutan tropis Meksiko selatan. Tanaman ini terkenal dengan lubang alami pada daunnya (fenestrasi) yang berevolusi untuk memaksimalkan penangkapan cahaya matahari di dasar hutan. Ini adalah tanaman epifit merambat yang bisa tumbuh hingga 20 meter di habitat aslinya.",
+    "care_guide_en": "Plant in well-draining aroid potting mix (bark, perlite, peat). Allow the top 2-3 inches of soil to dry completely between waterings. Provide a moss pole for climbing support to encourage larger, fenestrated leaves. Thrives in 65-85°F (18-30°C) with >50% humidity.",
+    "care_guide_id": "Tanam pada media tanam aroid yang porous (campuran cacahan pakis, perlite, sekam bakar). Biarkan 5-7 cm bagian atas tanah mengering sebelum disiram kembali. Berikan turus lumut (moss pole) sebagai rambatan agar daun tumbuh lebih besar dan berlubang. Optimal di suhu 18-30°C dengan kelembapan di atas 50%.",
+    "toxicity_en": "Contains insoluble calcium oxalate crystals. Chewing or biting into the plant releases these crystals, causing tissue penetration and irritation of the mouth, GI tract, leading to swelling, drooling, and vomiting. Keep away from pets and small children.",
+    "toxicity_id": "Mengandung kristal kalsium oksalat yang tidak larut. Mengunyah atau menggigit tanaman ini akan melepaskan kristal tersebut, menyebabkan iritasi parah pada mulut dan saluran pencernaan, pembengkakan, air liur berlebih, serta muntah. Jauhkan dari hewan peliharaan dan anak kecil."
+  },
+  "alocasia": {
+    "name": "Alocasia Amazonica",
+    "family": "Araceae",
+    "water_id": "Tinggi (Jaga tetap lembab)",
+    "water_en": "High (Keep moist)",
+    "sun_id": "Cahaya Sedang Terang",
+    "sun_en": "Medium to Bright Light",
+    "description_en": "Alocasia Amazonica (Polly) is a striking tropical hybrid featuring dark green, arrow-shaped leaves with highly contrasting, pronounced white or silvery-green veins. Despite its name, it is a nursery hybrid and not native to the Amazon. It grows from rhizomes and has a highly architectural appearance.",
+    "description_id": "Alocasia Amazonica (Polly) adalah hibrida tropis mencolok yang menampilkan daun berbentuk panah berwarna hijau tua dengan urat daun berwarna putih atau hijau keperakan yang sangat kontras. Tumbuh dari rimpang (rhizome) dan memiliki penampilan yang sangat arsitektural dan eksotis.",
+    "care_guide_en": "Requires consistently moist but not soggy soil. Never let it dry out completely. High humidity (60%+) is crucial to prevent spider mites and leaf curling. Keep in temperatures above 15°C (60°F) to prevent it from going dormant.",
+    "care_guide_id": "Membutuhkan tanah yang selalu lembap namun tidak becek. Jangan biarkan tanah mengering sepenuhnya. Kelembapan udara tinggi (60%+) sangat penting untuk mencegah serangan tungau laba-laba dan daun menggulung. Jaga suhu di atas 15°C agar tanaman tidak mengalami masa dorman.",
+    "toxicity_en": "Highly toxic. Contains calcium oxalate crystals which can cause intense burning and swelling of the mouth, tongue, and throat upon ingestion, potentially leading to airway blockage.",
+    "toxicity_id": "Sangat beracun. Mengandung kristal kalsium oksalat yang dapat menyebabkan rasa terbakar yang hebat dan pembengkakan pada mulut, lidah, dan tenggorokan jika tertelan, yang berpotensi menyumbat jalan napas."
+  },
+  "sansevieria": {
+    "name": "Sansevieria Trifasciata",
+    "family": "Asparagaceae",
+    "water_id": "Rendah (2-3 minggu sekali)",
+    "water_en": "Low (Every 2-3 weeks)",
+    "sun_id": "Toleran (Rendah hingga Panas)",
+    "sun_en": "Tolerant (Low to Direct)",
+    "description_en": "Sansevieria Trifasciata, or Snake Plant, is a resilient succulent native to West Africa. Characterized by its stiff, upright, sword-like leaves with green banding and often yellow edges. It is renowned for its exceptional air-purifying qualities, particularly its ability to convert CO2 to oxygen at night (CAM photosynthesis).",
+    "description_id": "Sansevieria Trifasciata, atau Lidah Mertua, adalah tanaman sukulen tangguh yang berasal dari Afrika Barat. Ciri khasnya adalah daun yang kaku, tegak, berbentuk seperti pedang dengan belang hijau dan pinggiran kuning. Sangat terkenal karena kemampuannya menjernihkan udara, terutama mengubah CO2 menjadi oksigen di malam hari.",
+    "care_guide_en": "Virtually indestructible. Plant in well-draining cactus/succulent soil. Water only when the soil is completely bone-dry throughout the pot. Overwatering is the only way to kill it. Tolerates almost any light condition from dark corners to direct sun.",
+    "care_guide_id": "Sangat sulit mati. Tanam di media tanam kaktus/sukulen yang sangat porous. Siram HANYA ketika seluruh media tanam di dalam pot sudah benar-benar kering kerontang. Terlalu banyak air adalah musuh utamanya. Mampu bertahan di kondisi cahaya redup maupun panas matahari langsung.",
+    "toxicity_en": "Mildly toxic to pets. Saponins in the leaves can cause nausea, vomiting, and diarrhea if ingested in large quantities.",
+    "toxicity_id": "Beracun ringan bagi hewan. Kandungan saponin pada daunnya dapat menyebabkan mual, muntah, dan diare jika dikonsumsi dalam jumlah banyak."
+  }
+}
