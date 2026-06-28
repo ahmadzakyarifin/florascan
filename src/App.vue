@@ -853,9 +853,21 @@ const normalizeLabel = (label) => {
 }
 
 const plantKeyByLabel = {
-  alocasia: 'alocasia',
+  syngonium: 'syngonium',
+  sansevieria: 'sansevieria',
+  philodendron: 'philodendron',
   monstera: 'monstera',
-  sansevieria: 'sansevieria'
+  hoya: 'hoya',
+  ficus: 'ficus',
+  epipremnum: 'epipremnum',
+  dieffenbachia: 'dieffenbachia',
+  calathea: 'calathea',
+  caladium: 'caladium',
+  aglaonema: 'aglaonema',
+  anthurium: 'anthurium',
+  begonia: 'begonia',
+  peperomia: 'peperomia',
+  alocasia: 'alocasia'
 }
 
 const titleFromLabel = (label) => {
