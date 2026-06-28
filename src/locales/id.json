@@ -18,6 +18,7 @@
     "permission_hint": "Jika muncul pesan situs tidak dapat meminta izin, tutup balon chat, floating window, screen filter, atau overlay aplikasi lain, lalu tekan Buka Kamera lagi.",
     "no_device": "Perangkat kamera tidak ditemukan.",
     "unsupported": "Browser ini belum mendukung akses kamera langsung.",
+    "analysis_failed": "Model AI gagal menganalisis gambar. Muat ulang aplikasi lalu coba lagi.",
     "instruction": "Arahkan kamera ke daun tanaman untuk identifikasi"
   },
   "result": {

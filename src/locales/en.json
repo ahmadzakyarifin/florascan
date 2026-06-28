@@ -18,6 +18,7 @@
     "permission_hint": "If the site cannot ask for permission, close chat bubbles, floating windows, screen filters, or app overlays, then tap Open Camera again.",
     "no_device": "No camera device found.",
     "unsupported": "This browser does not support direct camera access.",
+    "analysis_failed": "The AI model failed to analyze the image. Reload the app and try again.",
     "instruction": "Point the camera at the plant leaf for identification"
   },
   "result": {
