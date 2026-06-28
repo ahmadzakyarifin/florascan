@@ -3,8 +3,11 @@ import vue from '@vitejs/plugin-vue'
 import tailwindcss from '@tailwindcss/vite'
 import { VitePWA } from 'vite-plugin-pwa'
 
+const isVercel = process.env.VERCEL === '1' || process.env.VERCEL === 'true'
+const appBase = isVercel ? '/' : '/florascan/'
+
 export default defineConfig({
-  base: '/florascan/',
+  base: appBase,
   plugins: [
     vue(),
     tailwindcss(),
@@ -12,7 +15,7 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg', 'apple-touch-icon.png', 'masked-icon.svg'],
       manifest: {
-        id: '/florascan/',
+        id: appBase,
         name: 'FloraScan',
         short_name: 'FloraScan',
         description: 'Professional AI Plant Identifier',
@@ -20,8 +23,8 @@ export default defineConfig({
         background_color: '#ffffff',
         display: 'standalone',
         orientation: 'portrait',
-        scope: '/florascan/',
-        start_url: '/florascan/',
+        scope: appBase,
+        start_url: appBase,
         icons: [
           {
             src: 'pwa-192x192.png',
