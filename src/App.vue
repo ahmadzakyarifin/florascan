@@ -3,7 +3,7 @@
     <!-- App Launch Splash -->
     <div
       v-if="isSplashVisible"
-      class="fixed inset-0 z-[70] flex flex-col items-center justify-center bg-emerald-700 text-white px-8 animate-splash-out"
+      class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-emerald-700 text-white px-8 animate-splash-out" style="z-index: 70;"
     >
       <div class="relative mb-7">
         <div class="absolute inset-0 rounded-3xl bg-white/25 blur-xl animate-pulse"></div>
