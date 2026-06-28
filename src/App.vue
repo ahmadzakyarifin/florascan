@@ -170,7 +170,12 @@
               </button>
             </template>
           </div>
-          <p v-if="cameraError" class="text-red-500 text-sm text-center font-medium mt-1">{{ cameraError }}</p>
+          <div v-if="cameraError" class="mt-1 text-center">
+            <p class="text-red-500 text-sm font-semibold">{{ cameraError }}</p>
+            <p class="text-xs text-red-400 dark:text-red-300 mt-1 max-w-xl mx-auto leading-relaxed">
+              {{ $t('camera.permission_hint') }}
+            </p>
+          </div>
         </section>
 
         <!-- BOTTOM PANEL: Results Section -->
@@ -757,6 +762,11 @@ const toggleLang = () => {
 const startCamera = async () => {
   cameraError.value = ''
   try {
+    if (!navigator.mediaDevices?.getUserMedia) {
+      cameraError.value = t('camera.unsupported')
+      return
+    }
+
     stream = await navigator.mediaDevices.getUserMedia({ 
       video: { facingMode: 'environment' }
     })
@@ -770,6 +780,11 @@ const startCamera = async () => {
     }
   } catch (err) {
     console.error("Error accessing camera: ", err)
+    if (err?.name === 'NotFoundError' || err?.name === 'DevicesNotFoundError') {
+      cameraError.value = t('camera.no_device')
+      return
+    }
+
     cameraError.value = t('camera.permission_denied')
   }
 }

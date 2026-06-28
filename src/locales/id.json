@@ -15,7 +15,9 @@
     "save_history": "Simpan ke Riwayat",
     "analyzing": "AI sedang menganalisis...",
     "permission_denied": "Akses kamera ditolak. Mohon izinkan akses kamera pada browser.",
+    "permission_hint": "Jika muncul pesan situs tidak dapat meminta izin, tutup balon chat, floating window, screen filter, atau overlay aplikasi lain, lalu tekan Buka Kamera lagi.",
     "no_device": "Perangkat kamera tidak ditemukan.",
+    "unsupported": "Browser ini belum mendukung akses kamera langsung.",
     "instruction": "Arahkan kamera ke daun tanaman untuk identifikasi"
   },
   "result": {

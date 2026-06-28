@@ -15,7 +15,9 @@
     "save_history": "Save to History",
     "analyzing": "AI is analyzing...",
     "permission_denied": "Camera access denied. Please allow camera permissions.",
+    "permission_hint": "If the site cannot ask for permission, close chat bubbles, floating windows, screen filters, or app overlays, then tap Open Camera again.",
     "no_device": "No camera device found.",
+    "unsupported": "This browser does not support direct camera access.",
     "instruction": "Point the camera at the plant leaf for identification"
   },
   "result": {
